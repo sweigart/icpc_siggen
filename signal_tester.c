@@ -85,23 +85,26 @@ int main(int argc, char **argv) {
   }
   if (signal_calc_init(argv[1], &setup) != 0) return 1;
   setup.coord_type = CYL;
+  // setup.verbosity = 0;
 
   ncmds = sizeof(cmds)/sizeof(cmds[0]);
   while (1) {
-    rl_gets(ans, MAX_LINE);
+    // rl_gets(ans, MAX_LINE);
+    strncpy(ans, argv[2], MAX_LINE);
     for (cp = ans; isspace(*cp); cp++);
     if (strlen(cp) == 0) continue;
     if (strncmp(cp, "quit", 4) == 0) return 0;
     for (i = 0; i < ncmds; i++){
       if (strncmp(cp, cmds[i].cmd, strlen(cmds[i].cmd)) == 0){
-	cp += strlen(cmds[i].cmd);
-	cmds[i].f(cp, &setup);
-	break;
+      	cp += strlen(cmds[i].cmd);
+      	cmds[i].f(cp, &setup);
+      	break;
       }
     } 
     if (i == ncmds){
       printf("unknown command: %s\n", ans);
     }
+    break;
   }
   return 0;
 }
@@ -312,7 +315,7 @@ static int print_signal(char *cmd, MJD_Siggen_Setup *setup){
 
   printf("signal: \n");
   for (i = 0; i < setup->ntsteps_out; i++){
-    printf("%.3f ", s[i]);
+    printf("%.3f, ", s[i]);
     if (i%10 == 9) printf("\n");
   }
   printf("\n");
